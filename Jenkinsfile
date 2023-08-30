@@ -22,19 +22,24 @@ environment {
 
         stage('maven package') {
             steps {
-                sh 'mvn clean'
-                sh 'mvn package -DskipTests'
+                dir('./backend_digital_banking_secure/'){
+                    sh 'mvn clean'
+                    sh 'mvn package -DskipTests'
+                }
             }
         }
         stage('Build Image') {
             
             steps {
-                script{
-                  def mavenPom = readMavenPom file: 'pom.xml'
-                  POM_VERSION = "${mavenPom.version}"
-                  echo "${POM_VERSION}"
-                  dockerImage = docker.build registry + ":${POM_VERSION}"
-                } 
+                dir('./backend_digital_banking_secure/'){
+                     script{
+                        def mavenPom = readMavenPom file: 'pom.xml'
+                        POM_VERSION = "${mavenPom.version}"
+                        echo "${POM_VERSION}"
+                        dockerImage = docker.build registry + ":${POM_VERSION}"
+                    } 
+
+                }
             }
         }
  	    
